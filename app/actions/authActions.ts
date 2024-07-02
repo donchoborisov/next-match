@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import { ActionResult } from "@/types";
 import { User } from "@prisma/client";
 import { LoginSchema } from "@/lib/schemas/loginSchema";
-import { signIn, signOut } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 
 
@@ -118,4 +118,15 @@ export async function getUserById(id:string) {
         }
     });
 
+}
+
+export async function getAuthUserId() {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+        throw new Error('Unautorhised');
+    }
+
+    return userId;
 }
