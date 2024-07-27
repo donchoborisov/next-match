@@ -60,6 +60,8 @@ model Member {
   photos Photo[] //member has many pics
   sourceLikes  Like[] @relation("source")  //member has many likes
   targetLikes  Like[] @relation("target") //member has many likes
+  senderMessages Message[] @relation("sender") //member has many sent messages
+  recepientMessages Message[] @relation("recepient") //member has many received messages
 }
 
 model Photo {
@@ -81,5 +83,21 @@ model Like {
   targetMember Member @relation("target",fields: [targetUserId], references: [userId], onDelete: Cascade)
 
   @@id([sourceUserId, targetUserId])
+}
+
+model Message {
+   id String @id @default(cuid())
+   text String 
+   created DateTime @default(now())
+   senderId String?
+   recepientId String?
+   sender Member? @relation("sender", fields: [senderId], references: [userId], onDelete: SetNull)
+   recepient Member? @relation("recepient", fields: [recepientId], references: [userId], onDelete: SetNull)
+   dateRead DateTime?
+   senderDeleted Boolean @default(false)
+   recepientDeleted Boolean @default(false)
+
+
+
 }
 
